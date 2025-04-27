@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contador de Palabras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>📚 Contador de Palabras Web</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <textarea name="texto_manual" placeholder="Pega tu texto aquí..." rows="10" cols="50"></textarea>
+        <br><br>
+        <input type="file" name="archivo_txt" accept=".txt">
+        <br><br>
+        <button type="submit">Analizar</button>
+    </form>
+
+    {% if mensaje %}
+    <p style="color:red;">{{ mensaje }}</p>
+    {% endif %}
+</body>
+</html>

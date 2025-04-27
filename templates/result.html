@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados del Análisis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>📈 Resultados del Análisis de Texto</h1>
+
+    <p><strong>Total de palabras:</strong> {{ total_palabras }}</p>
+
+    <h2>📋 Top 10 Palabras más Frecuentes:</h2>
+    <table border="1" style="margin: auto; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th>Palabra</th>
+                <th>Frecuencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for palabra, cantidad in palabras_frecuencias %}
+            <tr>
+                <td>{{ palabra }}</td>
+                <td>{{ cantidad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if grafico_url %}
+    <h2>📊 Gráfico de Frecuencias:</h2>
+    <img src="{{ url_for('static', filename='images/grafico.png') }}" alt="Gráfico de palabras frecuentes" style="max-width:80%; margin-top: 20px;">
+    {% endif %}
+
+    <br><br>
+    <a href="{{ url_for('index') }}">
+        🔙 Volver a analizar otro texto
+    </a>
+</body>
+</html>
