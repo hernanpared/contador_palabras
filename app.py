@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import os
 from collections import Counter
 import matplotlib.pyplot as plt
@@ -7,8 +7,9 @@ import matplotlib.pyplot as plt
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'una_clave_secreta_segura'  # Necesario para usar session
 
-# Ruta principal - Página para pegar texto o subir archivo
+# Ruta principal
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -16,22 +17,24 @@ def index():
         archivo = request.files.get('archivo_txt')
 
         if texto:
-            return redirect(url_for('resultado_texto', texto=texto))
+            session['texto'] = texto  # Guardamos el texto en sesión
+            return redirect(url_for('resultado_texto'))
         elif archivo:
             ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], archivo.filename)
             archivo.save(ruta_archivo)
             with open(ruta_archivo, 'r', encoding='utf-8') as f:
                 contenido = f.read()
-            return redirect(url_for('resultado_texto', texto=contenido))
+            session['texto'] = contenido
+            return redirect(url_for('resultado_texto'))
         else:
             return render_template('index.html', mensaje="Por favor, sube un archivo o pega un texto.")
 
     return render_template('index.html')
 
 # Ruta para mostrar resultados
-@app.route('/resultado')
+@app.route('/resultado', methods=['GET'])
 def resultado_texto():
-    texto = request.args.get('texto', '')
+    texto = session.get('texto', '')
 
     # Procesar el texto
     palabras = texto.lower().split()
